@@ -28,7 +28,7 @@ public class RequestController{
 		MongoClient mongoClient = new MongoClient(clientURI);
 
 		MongoDatabase db = mongoClient.getDatabase("warehouse");
-		RequestController.collection = db.getCollection("goods");
+		collection = db.getCollection("goods");
 	}
 	@GetMapping("/read")
 	@ResponseStatus(HttpStatus.OK)
@@ -50,7 +50,7 @@ public class RequestController{
 					   @RequestParam(value = "description", defaultValue = "") String descrp,
 					   @RequestParam(value = "photoURL", defaultValue = "https://www.google.de/") String str_url,
 					   @RequestParam(value = "price", defaultValue = "0") String str_price,
-					   @RequestParam(value = "amount", defaultValue = "0") String str_amount) throws MalformedURLException{
+					   @RequestParam(value = "warehouse amount", defaultValue = "0") String str_amount) throws MalformedURLException{
 			Document document = new Product(Long.parseLong(str_id), SKU, descrp, str_url,
 					Double.parseDouble(str_price), Long.parseLong(str_amount)).toDocument();
 			collection.insertOne(document);
@@ -81,7 +81,7 @@ public class RequestController{
 					   @RequestParam(value = "description", required = false) Optional<String> descrp,
 					   @RequestParam(value = "photoURL", required = false) Optional<String> str_url,
 					   @RequestParam(value = "price", required = false) Optional<String> str_price,
-					   @RequestParam(value = "amount", required = false) Optional<String> str_amount){
+					   @RequestParam(value = "warehouse amount", required = false) Optional<String> str_amount){
 		Document found = (Document) collection.find( new Document("id", str_id)).first();
 		if(found != null){
 			SKU.ifPresent( value -> updateField( found, "SKU", value));
