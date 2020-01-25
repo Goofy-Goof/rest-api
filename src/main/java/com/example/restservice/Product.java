@@ -11,7 +11,7 @@ public class Product{
 	@Id private long id;	//i suppose id is unique
 	private String SKU;
 	private String description;
-	private URL photoUrl;
+	private URL photoURL;
 	private double price;
 	private long warehouseAmount;
 
@@ -20,7 +20,7 @@ public class Product{
 		this.id = id;
 		this.SKU = SKU;
 		this.description = description;
-		this.photoUrl = new URL(photoUrl);
+		this.photoURL = new URL(photoUrl);
 		this.price = price;
 		this.warehouseAmount = warehouseAmount;
 	}
@@ -34,9 +34,32 @@ public class Product{
 				.append("id", Long.toString(this.id))
 				.append("SKU", this.SKU)
 				.append("description", this.description)
-				.append("photoUrl", this.photoUrl.toString())
+				.append("photoUrl", this.photoURL.toString())
 				.append("price",  Double.toString(this.price))
 				.append("warehouse amount", Long.toString(this.warehouseAmount));
 	}
 
+	public long getId() {
+		return id;
+	}
+
+	public String getSKU() {
+		return SKU;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public URL getPhotoURL() {
+		return photoURL;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public long getWarehouseAmount() {
+		return warehouseAmount;
+	}
 }
