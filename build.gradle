@@ -17,6 +17,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.mongodb:mongo-java-driver:3.8.0'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 	testCompile 'com.jayway.jsonpath:json-path'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 	}
