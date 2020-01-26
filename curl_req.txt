@@ -1,0 +1,4 @@
+curl -X PUT --data "id=66&amount=555" localhost:8080/update
+curl -X DELETE --data "id=66" localhost:8080/delete
+curl -X GET 'localhost:8080/read?id=66' 
+curl -X POST --data "id=66&SKU=abcde" localhost:8080/create

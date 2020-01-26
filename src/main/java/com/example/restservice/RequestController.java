@@ -32,7 +32,7 @@ public class RequestController{
 	@GetMapping("/read")
 	@ResponseStatus(HttpStatus.OK)
 	public Document read(@RequestParam(value = "id", required = true) String str_id) {
-
+		//System.out.println("recived read");
 		Document found = (Document) collection.find(new Document("id", str_id)).first();
 		if(found != null) {
 			found.remove("_id");
@@ -50,6 +50,7 @@ public class RequestController{
 					   @RequestParam(value = "photoURL", defaultValue = "https://www.google.de/") String str_url,
 					   @RequestParam(value = "price", defaultValue = "0") String str_price,
 					   @RequestParam(value = "warehouse amount", defaultValue = "0") String str_amount) throws MalformedURLException{
+		//System.out.println("recvieved create");
 			Document document = new Product(Long.parseLong(str_id), SKU, descrp, str_url,
 					Double.parseDouble(str_price), Long.parseLong(str_amount)).toDocument();
 			collection.insertOne(document);
@@ -59,6 +60,7 @@ public class RequestController{
 	@DeleteMapping("/delete")
 	@ResponseStatus(HttpStatus.OK)
 	public void delete(@RequestParam(value = "id", required = true) String str_id) {
+		//System.out.println("recieved delete");
 		Document document = new Document().append( "id", str_id );
 		collection.deleteOne( document );
 	}
@@ -68,7 +70,7 @@ public class RequestController{
 		Bson updatedvalue = new Document(key, value);
 		Bson updateoperation = new Document("$set", updatedvalue);
 		collection.updateOne(document,updateoperation);
-		System.out.println("updated " + key);
+		//System.out.println("updated " + key);
 	}
 
 
@@ -81,6 +83,7 @@ public class RequestController{
 					   @RequestParam(value = "photoURL", required = false) Optional<String> str_url,
 					   @RequestParam(value = "price", required = false) Optional<String> str_price,
 					   @RequestParam(value = "warehouse amount", required = false) Optional<String> str_amount){
+		//System.out.println("recieved update");
 		Document found = (Document) collection.find( new Document("id", str_id)).first();
 		if(found != null){
 			SKU.ifPresent( value -> updateField( found, "SKU", value));
