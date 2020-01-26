@@ -93,7 +93,10 @@ public class RequestControllerTest {
 			assertEquals( found, expected );
 
 		}
-		//RequestController.collection.drop();
+		if(sleep){
+			Thread.sleep( 10000 );
+			RequestController.collection.drop();
+		}
 
 	}
 	@Test
@@ -115,7 +118,10 @@ public class RequestControllerTest {
 			//System.out.println();
 		}
 
-		//RequestController.collection.drop();
+		if(sleep){
+			Thread.sleep( 10000 );
+			RequestController.collection.drop();
+		}
 	}
 	@Ignore
 	public String generateNewKey(String key) throws Exception{
@@ -175,23 +181,18 @@ public class RequestControllerTest {
 				MvcResult result = this.mockMvc.perform( get( "/read" )
 						.param( "id", Long.toString( pr.getId() )))
 						.andExpect( status().isOk()).andReturn();
-				try{
 					assertTrue(
 							documentWasUpdated( pr.toDocument().toJson() , result.getResponse().getContentAsString(), key ));
-				}catch (AssertionError ass){
-					String before = pr.toDocument().toJson();
-					String after = result.getResponse().getContentAsString();
-					System.out.println("to change " + key);
-					System.out.println("before " +before);
-					System.out.println("after" + after);
-				}
+
 
 
 
 			}
 		}
-
-
+		if(sleep){
+			Thread.sleep( 10000 );
+			RequestController.collection.drop();
+		}
 	}
 
 }
