@@ -19,7 +19,7 @@ public class RequestController{
 
 	static MongoCollection collection;
 	static void connectDB(){
-		String uri = "mongodb+srv://artem:artem2288@cluster0-i1rs3.mongodb.net/test\n\n";
+		String uri = "mongodb+srv://artem:artem2288@cluster0-i1rs3.mongodb.net/test";
 		MongoClientOptions.Builder options = MongoClientOptions.builder();
 		options.sslEnabled(true);
 		options.socketKeepAlive(true);

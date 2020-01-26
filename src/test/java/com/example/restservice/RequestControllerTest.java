@@ -23,6 +23,7 @@ public class RequestControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
+	private final boolean sleep = true;
 
 	@Ignore
 	public String generateRandomString(boolean numerical, int len){
@@ -30,41 +31,7 @@ public class RequestControllerTest {
 		//System.out.println("Generated String " + generatedString);
 		return generatedString;
 	}
-	@Test
-	public void sendWithoutId() throws Exception{
-		RequestController.connectDB();
-		//id is obligatory parameter to request, check if requests without id will return error
-		this.mockMvc.perform(post("/create")
-				.param( "SKU", "sku" )
-				.param( "description", "__")
-				.param( "photoURL", "https://www.google.de/" )
-				.param( "price", "333.3" )
-				.param( "warehouse amount", "22")).andExpect(status().is4xxClientError());
 
-		this.mockMvc.perform(get("/read")
-				.param( "SKU", "sku" )
-				.param( "description", "__")
-				.param( "photoURL", "https://www.google.de/" )
-				.param( "price", "333.3" )
-				.param( "warehouse amount", "22")).andExpect(status().is4xxClientError());
-
-		this.mockMvc.perform(delete("/delete")
-				.param( "SKU", "sku" )
-				.param( "description", "__")
-				.param( "photoURL", "https://www.google.de/" )
-				.param( "price", "333.3" )
-				.param( "warehouse amount", "22")).andExpect(status().is4xxClientError());
-
-		this.mockMvc.perform(put("/update")
-				.param( "SKU", "sku" )
-				.param( "description", "__")
-				.param( "photoURL", "https://www.google.de/" )
-				.param( "price", "333.3" )
-				.param( "warehouse amount", "22")).andExpect(status().is4xxClientError());
-
-		//RequestController.collection.drop();
-
-	}
 	@Ignore
 	public LinkedList<Product> createProducts(int max) throws Exception{
 		//create list if random objects, to test requestcontroller later with
@@ -121,12 +88,9 @@ public class RequestControllerTest {
 			MvcResult result = this.mockMvc.perform( get( "/read" ).param( "id", Long.toString( it.getId() ) ) )
 					.andExpect( status().isOk() ).andReturn();
 
-
 			String found = parseDocument(result.getResponse().getContentAsString());
 			String expected = parseDocument(it.toDocument().toJson());
 			assertEquals( found, expected );
-
-
 
 		}
 		//RequestController.collection.drop();
@@ -138,6 +102,7 @@ public class RequestControllerTest {
 		RequestController.connectDB();
 		LinkedList<Product> products = createProducts(  10 );
 		fillDB( products );
+		if(sleep)Thread.sleep( 10000 );
 		for(Product pr : products){
 			this.mockMvc.perform( delete( "/delete" )
 					.param( "id", Long.toString( pr.getId() )))
@@ -195,6 +160,8 @@ public class RequestControllerTest {
 	RequestController.connectDB();
 	LinkedList<Product> products = createProducts( 10 );
 		fillDB( products );
+
+		if(sleep)Thread.sleep( 10000 );
 		String[] keysToChange = {"SKU", "description", "price", "warehouse amount"};
 		for(Product pr : products){
 
