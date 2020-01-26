@@ -17,8 +17,9 @@ import java.util.Optional;
 @RestController
 public class RequestController{
 
-	static MongoCollection collection;
-	static void connectDB(){
+	private MongoCollection collection;
+	private static  RequestController controllerSingletone = null;
+	public void connectDB(){
 		String uri = "mongodb+srv://artem:artem2288@cluster0-i1rs3.mongodb.net/test";
 		MongoClientOptions.Builder options = MongoClientOptions.builder();
 		options.sslEnabled(true);
@@ -27,8 +28,22 @@ public class RequestController{
 		MongoClient mongoClient = new MongoClient(clientURI);
 
 		MongoDatabase db = mongoClient.getDatabase("warehouse");
-		collection = db.getCollection("goods");
+		this.collection = db.getCollection("goods");
 	}
+	private RequestController(){
+		this.connectDB();
+	}
+	public static RequestController RequestControler(){
+		if(controllerSingletone == null){
+			controllerSingletone = new RequestController();
+		}
+		return controllerSingletone;
+	}
+
+	public MongoCollection getCollection() {
+		return collection;
+	}
+
 	@GetMapping("/read")
 	@ResponseStatus(HttpStatus.OK)
 	public Document read(@RequestParam(value = "id", required = true) String str_id) {

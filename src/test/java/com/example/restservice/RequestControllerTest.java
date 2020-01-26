@@ -1,12 +1,16 @@
 package com.example.restservice;
 
 import static org.junit.Assert.*;
+
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.event.annotation.AfterTestMethod;
+import org.springframework.test.context.event.annotation.BeforeTestMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.junit.runner.RunWith;
@@ -24,6 +28,8 @@ public class RequestControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 	private final boolean sleep = true;
+	private final boolean drop = true;
+	private RequestController controller;
 
 	@Ignore
 	public String generateRandomString(boolean numerical, int len){
@@ -76,13 +82,24 @@ public class RequestControllerTest {
 
 		}
 	}
+	@BeforeTestMethod
+	public void initiatecontroller(){
+		this.controller = RequestController.RequestControler();
+	}
+	@AfterTestMethod
+	public void dropCollection() throws Exception{
+		if(sleep && drop){
+			System.out.println("Collection will be dropped soon");
+			Thread.sleep( 10000 );
+			this.controller.getCollection().drop();
+		}
+	}
 	@Test
 	public void fillAndReadDocumentsFromDBTest() throws Exception {
 		//firstly check if all saved Douments can be retrieved back
-		RequestController.connectDB();
+		//RequestController.connectDB();
 		LinkedList<Product> productList = createProducts(10);
 		fillDB( productList );
-
 
 		for(Product it : productList) {
 			MvcResult result = this.mockMvc.perform( get( "/read" ).param( "id", Long.toString( it.getId() ) ) )
@@ -93,18 +110,15 @@ public class RequestControllerTest {
 			assertEquals( found, expected );
 
 		}
-		if(sleep){
-			Thread.sleep( 10000 );
-			RequestController.collection.drop();
-		}
 
 	}
 	@Test
 	public void testDelete() throws Exception{
 		//then check if delete really removes every document from DB
-		RequestController.connectDB();
+		//RequestController.connectDB();
 		LinkedList<Product> products = createProducts(  10 );
 		fillDB( products );
+		System.out.println("DB filled");
 		if(sleep)Thread.sleep( 10000 );
 		for(Product pr : products){
 			this.mockMvc.perform( delete( "/delete" )
@@ -118,10 +132,7 @@ public class RequestControllerTest {
 			//System.out.println();
 		}
 
-		if(sleep){
-			Thread.sleep( 10000 );
-			RequestController.collection.drop();
-		}
+
 	}
 	@Ignore
 	public String generateNewKey(String key) throws Exception{
@@ -163,10 +174,10 @@ public class RequestControllerTest {
 	@Test
 	public void testUpdatingValues() throws Exception{
 		//for each object, try changing each field, and see if it really changed it
-	RequestController.connectDB();
-	LinkedList<Product> products = createProducts( 10 );
+	//RequestController.connectDB();
+	LinkedList<Product> products = createProducts( 2 );
 		fillDB( products );
-
+		System.out.println("DB filled");
 		if(sleep)Thread.sleep( 10000 );
 		String[] keysToChange = {"SKU", "description", "price", "warehouse amount"};
 		for(Product pr : products){
@@ -188,10 +199,6 @@ public class RequestControllerTest {
 
 
 			}
-		}
-		if(sleep){
-			Thread.sleep( 10000 );
-			RequestController.collection.drop();
 		}
 	}
 

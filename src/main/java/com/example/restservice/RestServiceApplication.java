@@ -9,7 +9,7 @@ public class RestServiceApplication {
 
     public static void main(String[] args) {
 
-        RequestController.connectDB();
+        RequestController controler = RequestController.RequestControler();
         SpringApplication.run(RestServiceApplication.class, args);
 
 
