@@ -33,6 +33,7 @@ public class RequestControllerTest {
 	@Test
 	public void sendWithoutId() throws Exception{
 		RequestController.connectDB();
+		//id is obligatory parameter to request, check if requests without id will return error
 		this.mockMvc.perform(post("/create")
 				.param( "SKU", "sku" )
 				.param( "description", "__")
@@ -66,13 +67,14 @@ public class RequestControllerTest {
 	}
 	@Ignore
 	public LinkedList<Product> createProducts(int max) throws Exception{
+		//create list if random objects, to test requestcontroller later with
 		LinkedList<Product> productList = new LinkedList<>();
 		Random random = new Random();
 		for(int i = 0; i != max; i++) {
 			long id = Math.abs( random.nextLong() ) + 1;
 			String sku = generateRandomString( true, 15 );
 			String description = generateRandomString( false, 20 );
-			String url = "https://www.google.de/";
+			String url = "https://www.google.de/"; //url is always google because of exception thrown by constructor
 			double price = Math.abs( random.nextDouble() );
 			long amount = Math.abs( random.nextLong() );
 			productList.add( new Product( id, sku, description, url, price, amount ) );
@@ -81,6 +83,8 @@ public class RequestControllerTest {
 	}
 	@Ignore
 	public String parseDocument(String string){
+		//parse slightly different represetations of json from Document and MvcResult,
+		//so they would be two string that can be compared nomally
 		String[] splited_string = string.split( "," );
 		String result = "";
 		for(int i = 0; i != splited_string.length; i++){
@@ -107,7 +111,7 @@ public class RequestControllerTest {
 	}
 	@Test
 	public void fillAndReadDocumentsFromDBTest() throws Exception {
-
+		//firstly check if all saved Douments can be retrieved back
 		RequestController.connectDB();
 		LinkedList<Product> productList = createProducts(10);
 		fillDB( productList );
@@ -130,6 +134,7 @@ public class RequestControllerTest {
 	}
 	@Test
 	public void testDelete() throws Exception{
+		//then check if delete really removes every document from DB
 		RequestController.connectDB();
 		LinkedList<Product> products = createProducts(  10 );
 		fillDB( products );
@@ -149,6 +154,7 @@ public class RequestControllerTest {
 	}
 	@Ignore
 	public String generateNewKey(String key) throws Exception{
+		//help function to generate random new key, to be used to test replace
 		switch (key){
 			case ("SKU"):
 				return generateRandomString( true, 15 );
@@ -164,10 +170,15 @@ public class RequestControllerTest {
 	}
 	@Ignore
 	public boolean documentWasUpdated(String old_doc, String new_doc, String key){
+		/*split sligtly different string representations of document
+		* then remove everythinf from each field except for letters, numbers and :
+		* then split it on : and check if current string is a key, than schould have been changed,
+		* and if its different than before
+		* */
 		key = key.replaceAll( "\\s+", "" ); //for the case of warehouse amount
 		String[] old_splited = old_doc.split( "," );
 		String[] new_splited = new_doc.split( "," );
-		for(int i = 0; i != old_splited.length; i++){
+		for(int i = 1; i != old_splited.length; i++){
 			old_splited[i] = old_splited[i].replaceAll("[^a-zA-Z0-9:]+","");
 			new_splited[i] = new_splited[i].replaceAll("[^a-zA-Z0-9:]+","");
 			String[] old_key_value = old_splited[i].split( ":" );
@@ -180,6 +191,7 @@ public class RequestControllerTest {
 	}
 	@Test
 	public void testUpdatingValues() throws Exception{
+		//for each object, try changing each field, and see if it really changed it
 	RequestController.connectDB();
 	LinkedList<Product> products = createProducts( 10 );
 		fillDB( products );
